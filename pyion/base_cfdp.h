@@ -64,4 +64,4 @@ uvast *fileSize, MetadataList *messagesToUser, uvast *offset, unsigned int *leng
 *recordBoundsRespected, CfdpContinuationState *continuationState, unsigned int *segMetadataLength,
  char *segMetadataBuffer, CfdpCondition *condition, uvast *progress, CfdpFileStatus *fileStatus, 
  CfdpDeliveryCode *deliveryCode, CfdpTransactionId *originatingTransactionId, char *statusReportBuf, 
- MetadataList *filestoreResponses);
+ MetadataList *filestoreResponses, unsigned int *closureRequested);

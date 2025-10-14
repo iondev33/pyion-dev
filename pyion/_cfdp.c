@@ -50,7 +50,7 @@ static char cfdp_add_usr_msg_docstring[] =
 static char cfdp_add_fs_req_docstring[] =
     "Add a user message to the next CFDP transaction.";    
 static char cfdp_next_evs_docstring[] =
-    "Handle CFDP events.";    
+    "Get next CFDP event.";    
 static char cfdp_interrupt_evs_docstring[] =
     "Handle CFDP events.";    
 
@@ -67,7 +67,7 @@ static PyObject *pyion_cfdp_resume(PyObject *self, PyObject *args);
 static PyObject *pyion_cfdp_report(PyObject *self, PyObject *args);
 static PyObject *pyion_cfdp_add_usr_msg(PyObject *self, PyObject *args);
 static PyObject *pyion_cfdp_add_fs_req(PyObject *self, PyObject *args);
-static PyObject *pyion_cfdp_next_events(PyObject *self, PyObject *args);
+static PyObject *pyion_cfdp_next_event(PyObject *self, PyObject *args);
 static PyObject *pyion_cfdp_interrupt_events(PyObject *self, PyObject *args);
 
 // Define member functions of this module
@@ -84,7 +84,7 @@ static PyMethodDef module_methods[] = {
     {"cfdp_report", pyion_cfdp_report, METH_VARARGS, cfdp_report_docstring},
     {"cfdp_add_usr_msg", pyion_cfdp_add_usr_msg, METH_VARARGS, cfdp_add_usr_msg_docstring},
     {"cfdp_add_filestore_request", pyion_cfdp_add_fs_req, METH_VARARGS, cfdp_add_fs_req_docstring},
-    {"cfdp_next_event", pyion_cfdp_next_events, METH_VARARGS, cfdp_next_evs_docstring},
+    {"cfdp_next_event", pyion_cfdp_next_event, METH_VARARGS, cfdp_next_evs_docstring},
     {"cfdp_interrupt_events", pyion_cfdp_interrupt_events, METH_VARARGS, cfdp_interrupt_evs_docstring},
     {NULL, NULL, 0, NULL}
 };
@@ -477,7 +477,7 @@ static PyObject *pyion_cfdp_report(PyObject *self, PyObject *args) {
  * === Handling of CFDP Events (see CCSDS CDFP, section 3.5.6 onwards)
  * ============================================================================ */
 
-static PyObject *pyion_cfdp_next_events(PyObject *self, PyObject *args) {
+static PyObject *pyion_cfdp_next_event(PyObject *self, PyObject *args) {
     // Define variables for cfdp_get_event
     CfdpEventType type;
     time_t time;
@@ -500,6 +500,7 @@ static PyObject *pyion_cfdp_next_events(PyObject *self, PyObject *args) {
 	CfdpTransactionId	originatingTransactionId;
 	char			statusReportBuf[256];
 	MetadataList		filestoreResponses;
+    unsigned int closureRequested;
     
     // Define other variables
     char err_msg[150];
@@ -508,14 +509,16 @@ static PyObject *pyion_cfdp_next_events(PyObject *self, PyObject *args) {
 
     // Receive the next CFDP event. This is a blocking call
     Py_BEGIN_ALLOW_THREADS                                // Release the GIL
-    rx_ret = base_cfdp_get_event(&type, &time, &reqNbr, &transactionId,
-				sourceFileNameBuf, destFileNameBuf,
-				&fileSize, &messagesToUser, &offset, &length,
-				&recordBoundsRespected, &continuationState,
-				&segMetadataLength, segMetadata,
-				&condition, &progress, &fileStatus,
-				&deliveryCode, &originatingTransactionId,
-				statusReportBuf, &filestoreResponses);
+    rx_ret = base_cfdp_get_event(&type, &time, &reqNbr, 
+        &transactionId, sourceFileNameBuf, destFileNameBuf,
+        &fileSize, &messagesToUser, &offset, &length,
+        &recordBoundsRespected, &continuationState,
+        &segMetadataLength, segMetadata,
+        &condition, &progress, &fileStatus,
+        &deliveryCode, &originatingTransactionId,
+        statusReportBuf, &filestoreResponses,
+        &closureRequested
+    );
     Py_END_ALLOW_THREADS                                  // Acquire the GIL
 
     // If reception of event failed, return
