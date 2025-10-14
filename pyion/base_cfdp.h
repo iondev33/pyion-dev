@@ -51,8 +51,6 @@ int base_cfdp_report(CfdpReqParms *params);
 
 void base_cfdp_interrupt(void);
 
-
-
 void base_cfdp_decompress_number(uvast *toNbr, CfdpNumber *from);
 
 int base_cfdp_get_usrmsg(MetadataList *list, unsigned char *textBuf, int *length);

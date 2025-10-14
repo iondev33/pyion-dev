@@ -135,8 +135,7 @@ class Endpoint():
 
 		# If using BPv7, custody transfer is not defined
 		if is_bpv7 and custody != BpCustodyEnum.NO_CUSTODY_REQUESTED:
-			raise ValueError('Custody transfer is not allowed in pyion-4.0.0+ since it is not in BPv7')
-
+			raise ValueError('Custody transfer is not allowed in pyion-4.0.0+ since it is not available in BPv7')
 
 		# Reset of transmit result result
 		self.tx_result = None
@@ -177,7 +176,7 @@ class Endpoint():
 		# Create a memoryview object
 		memv = memoryview(data)
 
-		# Send data in chuncks of chunk_size bytes
+		# Send data in chunks of chunk_size bytes
 		# NOTE: If data is not a multiple of chunk_size, the memoryview
 		#  		object returns the correct end of the buffer.
 		for i in range(0, len(memv), chunk_size):

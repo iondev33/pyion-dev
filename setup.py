@@ -63,8 +63,8 @@ from setuptools import setup, Extension
 import sys
 from warnings import warn
 
-__version__ = '4.1.3'
-__release__ = 'R2024a'
+__version__ = '4.1.4a2'
+__release__ = '4.1.4a2'
 
 # ========================================================================================
 # ===  Helper definitions
@@ -78,7 +78,7 @@ README = (Path(__file__).parent / "README.md").read_text()
 
 # Enforce Python3
 if sys.version_info.major < 3:
-    raise EnvironmentError('pyion only support Python3')
+    raise EnvironmentError('pyion only works with Python3')
 
 # ========================================================================================
 # === Locate paths for ION's public/private APIs

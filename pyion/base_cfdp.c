@@ -154,9 +154,29 @@ uvast *fileSize, MetadataList *messagesToUser, uvast *offset, unsigned int *leng
 *recordBoundsRespected, CfdpContinuationState *continuationState, unsigned int *segMetadataLength,
  char *segMetadataBuffer, CfdpCondition *condition, uvast *progress, CfdpFileStatus *fileStatus, 
  CfdpDeliveryCode *deliveryCode, CfdpTransactionId *originatingTransactionId, char *statusReportBuf, 
- MetadataList *filestoreResponses) {
-    return cfdp_get_event(type, time, reqNbr, transactionId, sourceFileNameBuf,
-    destFileNameBuf, fileSize, messagesToUser, offset, length, recordBoundsRespected,
-    continuationState, segMetadataLength, segMetadataBuffer, condition, progress,
-    fileStatus, deliveryCode, originatingTransactionId, statusReportBuf, filestoreResponses);
+ MetadataList *filestoreResponses, unsigned int *closureRequested) {
+    return cfdp_get_event(
+        type, 
+        time,
+        reqNbr, 
+        transactionId, 
+        sourceFileNameBuf,
+        destFileNameBuf, 
+        fileSize, 
+        messagesToUser, 
+        offset, 
+        length, 
+        recordBoundsRespected, 
+        continuationState, 
+        segMetadataLength, 
+        segMetadataBuffer, 
+        condition, 
+        progress,
+        fileStatus, 
+        deliveryCode, 
+        originatingTransactionId, 
+        statusReportBuf, 
+        filestoreResponses,
+        closureRequested
+    );
 }
