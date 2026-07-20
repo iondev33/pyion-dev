@@ -11,10 +11,15 @@
 #   docker/run.sh bp        # bp | cfdp | ltp | mem
 #
 # Then, in two more shells, drive the test (receiver first):
-#   docker exec -it pyion_node2 bash -lc 'cd tests/bp_tests && python3 rx.py'
-#   docker exec -it pyion_node1 bash -lc 'cd tests/bp_tests && python3 tx.py'
+#   docker exec -it pyion_node2 bash -lc 'cd /work/bp_tests && python3 rx.py'
+#   docker exec -it pyion_node1 bash -lc 'cd /work/bp_tests && python3 tx.py'
 #
 # Tear down with:  docker compose -f docker/compose.yaml down
+#
+# Note: the test is run from a container-internal copy of the test dir
+# (/work/<proto>_tests), NOT the mounted repo, so ION's runtime writes and
+# the scripts' chmod never dirty your working tree. pyion is still built from
+# the mounted working copy.
 name: pyion-tests
 
 x-node: &node
@@ -44,10 +49,13 @@ services:
     command: >-
       bash -c "
         python3 setup.py clean --all install &&
-        cd tests/${PYION_TEST:-bp}_tests &&
+        rm -rf /work && mkdir -p /work &&
+        cp -a tests/${PYION_TEST:-bp}_tests /work/ &&
+        cd /work/${PYION_TEST:-bp}_tests &&
+        rm -f nodes/ion_nodes nodes/*/ion.log nodes/*/node.stdout &&
         chmod -R +x . &&
         ./start 1 &&
-        echo '--- node 1 up; run rx/tx via docker exec ---' &&
+        echo '--- node 1 up (running under /work; repo tree untouched) ---' &&
         tail -f nodes/1/node.stdout
       "
 
@@ -62,10 +70,13 @@ services:
       bash -c "
         sleep 6 &&
         python3 setup.py clean --all install &&
-        cd tests/${PYION_TEST:-bp}_tests &&
+        rm -rf /work && mkdir -p /work &&
+        cp -a tests/${PYION_TEST:-bp}_tests /work/ &&
+        cd /work/${PYION_TEST:-bp}_tests &&
+        rm -f nodes/ion_nodes nodes/*/ion.log nodes/*/node.stdout &&
         chmod -R +x . &&
         ./start 2 &&
-        echo '--- node 2 up; run rx/tx via docker exec ---' &&
+        echo '--- node 2 up (running under /work; repo tree untouched) ---' &&
         tail -f nodes/2/node.stdout
       "
 

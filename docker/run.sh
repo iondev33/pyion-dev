@@ -8,8 +8,8 @@
 #   docker/run.sh <proto> <compose-args...>
 #
 # After 'up', drive the test from two more shells (receiver first):
-#   docker exec -it pyion_node2 bash -lc "cd tests/${PROTO}_tests && python3 rx.py"
-#   docker exec -it pyion_node1 bash -lc "cd tests/${PROTO}_tests && python3 tx.py"
+#   docker exec -it pyion_node2 bash -lc "cd /work/${PROTO}_tests && python3 rx.py"
+#   docker exec -it pyion_node1 bash -lc "cd /work/${PROTO}_tests && python3 tx.py"
 set -euo pipefail
 
 cd "$(dirname "$0")"
@@ -26,8 +26,8 @@ export PYION_TEST="$PROTO"
 if [ "$#" -eq 0 ]; then
   echo ">> Bringing up pyion '${PROTO}' test network (first run builds ION, ~10-15 min)."
   echo ">> When both nodes report 'up', drive the test in two more shells:"
-  echo ">>   docker exec -it pyion_node2 bash -lc 'cd tests/${PROTO}_tests && python3 rx.py'"
-  echo ">>   docker exec -it pyion_node1 bash -lc 'cd tests/${PROTO}_tests && python3 tx.py'"
+  echo ">>   docker exec -it pyion_node2 bash -lc 'cd /work/${PROTO}_tests && python3 rx.py'"
+  echo ">>   docker exec -it pyion_node1 bash -lc 'cd /work/${PROTO}_tests && python3 tx.py'"
   echo ">> Stop with: docker/run.sh ${PROTO} down"
   exec docker compose up --build
 else

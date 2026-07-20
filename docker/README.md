@@ -43,11 +43,17 @@ Once both nodes print `... up`, drive the test from two more shells
 (**receiver first**):
 
 ```bash
-docker exec -it pyion_node2 bash -lc 'cd tests/bp_tests && python3 rx.py'
-docker exec -it pyion_node1 bash -lc 'cd tests/bp_tests && python3 tx.py'
+docker exec -it pyion_node2 bash -lc 'cd /work/bp_tests && python3 rx.py'
+docker exec -it pyion_node1 bash -lc 'cd /work/bp_tests && python3 tx.py'
 ```
 
 `rx.py` prints received data and throughput; `tx.py` sends the test traffic.
+
+Each node runs from a **container-internal copy** of the test dir
+(`/work/<proto>_tests`), not the mounted repo — so ION's runtime log writes
+and the scripts' `chmod +x` never dirty your working tree. pyion itself is
+still built from your mounted working copy. Build artifacts it leaves in the
+repo (`build/`, `*.so`, `pyion.egg-info/`) are already git-ignored.
 
 Tear down:
 
