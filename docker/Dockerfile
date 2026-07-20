@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 #  - libexpat1-dev: ION dependency
 #  - iproute2/iputils-ping: handy for debugging the two-node network
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential autoconf automake libtool m4 \
+        build-essential autoconf automake libtool m4 pkg-config \
         git ca-certificates \
         python3 python3-dev python3-setuptools \
         libexpat1-dev \
